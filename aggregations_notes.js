@@ -35,7 +35,7 @@
  * kullanın çünkü stage'lerin karışması muhtemeldir.
  * Her stage ayrı bir aggregate kullanılarak yazılabilir dolayısıyla
  * debugging için o stage'i boş bir aggregation'da çalıştırabiliriz.
- * Map ve reduce kullanılmamaktadır yerine yine artık aggregation kullanıyoruz.
+ * Large datasetler için mapReduce kullanılmaktarı. Artık Map ve reduce kullanılmamaktadır yerine yine aggregation kullanıyoruz.
  */
 
 /**
@@ -45,9 +45,29 @@
  */
 
 /**
+ * *SQL'DEN GELENLER İÇİN AGGREGATION STAGELERİ
+ * where = $match
+ * group by = $group
+ * having = $match
+ * select = $project
+ * limit = $limit
+ * sum() = $sum
+ * count = $sum : 1
+ * join = $lookup
+ * select into new table = $out
+ * merge into table = $merge
+ * union all = $unionWith
+ * burada kaliteli örnekler var sql den gelenler için:
+ * https://docs.mongodb.com/manual/reference/sql-aggregation-comparison/
+ */
+
+/**
  * *AGGREGATION STAGELER*
  *
- * Başlangıç:
+ * Bütün Stageler dökümantasyon:
+ * https://docs.mongodb.com/manual/meta/aggregation-quick-reference/
+ *
+ * ? Başlangıç:
  * @match filtreleme yapar. sqldeki where sorgusuna denktir.
  * @project
  * @addFields dökümana yeni fieldlar eklemeye veya var olanı değiştirmeye yarar. update gibi
@@ -58,6 +78,7 @@
  * @limit result'taki max document sayısını belirler.
  * @count adı üstünde gösterilen dökümanları sayar.
  *
+ * ? Detaylı:
  * @match filtreleme yapar. sqldeki where sorgusuna denktir.
  * {$match: {<query>}}
  * !query find sorgusu ile eşdeğerdir.
@@ -101,8 +122,9 @@
  * @project spesific olarak istediğimiz fieldları getirmeye yarar.
  * concating işlemi de var meraklısı bakabilir burada veya project deydi sanırsam.
  * Kullanımı => { $project: { "<field1>": 0, "<field2>": 0, ... } } // Return all but the specified fields
- *
- * !Default olarak _id : 1 dir.
+ * örn: {$project: { _id: 0, 'name.last': 1, contribs: { $slice: 2 } } }
+ * (Contribs arrayinden ilk 2 fieldı ve name embedded dökümanından (obje içi obje nested document yani) last field'ını döner.)
+ * !Tıpkı find(query,projection) parametreleri alırken projectionda _id default olarak 1 iken burada da aynı durum söz konusudur.
  * @addFields dökümana yeni fieldlar eklemeye veya var olanı değiştirmeye yarar. update gibi
  * Burada çok iyi anlatılmış: https://docs.mongodb.com/manual/reference/operator/aggregation/addFields/#mongodb-pipeline-pipe.-addFields
  *
