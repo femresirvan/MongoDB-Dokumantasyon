@@ -142,7 +142,7 @@
  * kullanım-2: -1 Descending azalan sıralama
  * kullanım-3: { $meta: "textScore" } Sort by the computed textScore metadata in descending order.
  * computed textscore metadata için kaynak: https://docs.mongodb.com/manual/reference/operator/aggregation/sort/#std-label-sort-pipeline-metadata
- *
+ * Örnek: { $sort : { borough : 1 } }
  *
  * @limit result'taki max document sayısını belirler.
  * limit mutlaka sorttan sonra gelmelidir. sıralandıktan sonra limiti gerçekleştirmelidir.
