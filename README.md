@@ -103,46 +103,87 @@ $match filtreleme yapar. sqldeki where sorgusuna denktir.
 basit bir field için `<query>`:
 
 - $eq
+
   - field o değere eş mi buna bakar.
-  - örn: { $match: {"name" : "ahmet"}}
+  - ```json
+    { "$match": { "name": "ahmet" } }
+    ```
+
 - $lt $gt $lte $gte
   - büyüktür küçüktür karşılaştırması yapmak için.
-  - örn-1: { $match: {"qty" : { $gt: 5 } } }
-  - örn-2: { $match: { birth: { $gt: new Date('1940-01-01'), $lt: new Date('1960-01-01') } }
+  - örn-1:
+    ```json
+    { "$match": { "qty": { "$gt": 5 } } }
+    ```
+  - örn-2:
+    ```json
+    { $match: { birth: { $gt: new Date('1940-01-01'), $lt: new Date('1960-01-01') } }
+    ```
 - $in ve $all
 
   - string veya number içerisinde var mı diye kontrol eder
   - array içerisinde yazılır ve belirtilen stringlerden herhangi biri var mı diye kontrol edilir.
-  - örn: {$match: {"name" : {$in: ["ahmet","mehmet"]}}}
+  - örn:
+    ```json
+    { "$match": { "name": { "$in": ["ahmet", "mehmet"] } } }
+    ```
   - $in'e benzer bir başka kullanım da $all'dur. In'de içerisinde bunlardan herhangi biri var mı diye bakarız. All da ise bunların tamamı var mı diye bakarız yoksa kabul etmeyiz.
   - **!** Bir nevi; in => or dur, all => and dir.
   - Ayrıca string filtrelemede örneğin in kullanırken içerisinde a barındıran isimleri getir diye mesela regex kullanabiliriz.
 
 birden çok field için `<query>`:
 
-- örn: { $match: {"qty" : { $gt: 5 }, "name": "ahmet" }} böyle bir kullanım mevcuttur.
+- örn:
+  ```json
+  { "$match": { "qty": { "$gt": 5 }, "name": "ahmet" } }
+  ```
+  böyle bir kullanım mevcuttur.
 
 nested field(object içinde field , embedded document) için `<query>`:
 
 - iki kullanım mevcuttur:
-  - örn-1: { $match: { "address.city" : "bitlis" }}
-  - örn-2: { $match: { "address" : { "city": "bitlis" }}}
+  ```json
+  // Örnek 1
+  { $match: { "address.city" : "bitlis" }}
+  // Örnek 2
+  { $match: { "address" : { "city": "bitlis" }}}
+  ```
 
 Array içinde field için `<query>`:
 
 - iki kullanım mevcuttur:
-  - örn-1: { $match: {"credit_cards" : { "$number": "2333-2333-2333-2333" }}}
-  - örn-2: { $match: {"credit_cards.$number": "2333-2333-2333-2333" }}
+
+  ```json
+  // Örnek 1
+  { $match: {"credit_cards" : { "$number": "2333-2333-2333-2333" }}}
+  // Örnek 2
+  { $match: {"credit_cards.$number": "2333-2333-2333-2333" }}
+  ```
+
 - Array içinde böyle bir field var mı kontrolü
-  - { $match: { contribs: "UNIX" }} Contribs arrayinde UNIX field'ı var mı?
+  ```json
+  { "$match": { "contribs": "UNIX" } } // Contribs arrayinde UNIX field'ı var mı?
+  ```
 - Array içinde bu fieldlardan herhangi biri var mı kontrolü
-  - {$match { contribs: { $in: [ "ALGOL", "Lisp" ]} }}
+
+  ```json
+  {$match { contribs: { $in: [ "ALGOL", "Lisp" ]} }}
+  ```
+
 - Array içinde bu fieldların tamamı var mı kontrolü
-  - {$match { contribs: { $all: [ "ALGOL", "Lisp" ] } }}
+
+  ```json
+  {$match { contribs: { $all: [ "ALGOL", "Lisp" ] } }}
+  ```
+
 - Array in size'ının (kaç elemanlı olduğunun) kontrolü
-  - {$match { contribs: { $size: 4 } }}
+  ```json
+  {$match { contribs: { $size: 4 } }}
+  ```
 - Array içindeki objelerin elemanlarını AND operatörü ile filtreleme($elemMatch)
-  - {$match { awards: { $elemMatch: { award: "Turing Award", year: { $gt: 1980 } } } }}
+  ```json
+  {$match { awards: { $elemMatch: { award: "Turing Award", year: { $gt: 1980 } } } }}
+  ```
 
 Match için dökümantasyonlar:
 
@@ -162,11 +203,10 @@ spesific olarak istediğimiz fieldları getirmeye yarar.
 
 ```json
 {$project:{
-    \_id: 0, 'name.last': 1, contribs: { $slice: 2 } } }
+    \_id: 0, 'name.last': 1, contribs: { $slice: 2 } } } // Contribs arrayinden ilk 2 fieldı ve name embedded dökümanından (obje içi obje nested document yani) last field'ını döner.
 ```
 
-- (Contribs arrayinden ilk 2 fieldı ve name embedded dökümanından (obje içi obje nested document yani) last field'ını döner.)
-- concating (Eklenecek.)
+_!_ concating (Eklenecek.)
 
 ### Aggregation Örnekleri
 
