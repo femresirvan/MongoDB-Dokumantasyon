@@ -239,13 +239,16 @@ accumulatorler ve daha fazlası için: https://docs.mongodb.com/manual/reference
 kısaca sql deki natural join e tekabül etmektedir başka bir documentteki field'ı eşleştirmeye yarar.
 
 ```js
-{ $lookup: {
-from: <collection to join>,
-localField: <field from the input documents>,
-foreignField: <field from the documents of the "from" collection>,
-let: { <var_1>: <expression>, …, <var_n>: <expression> },
-pipeline: [ <pipeline to execute on the joined collection> ], // Cannot include $out or $merge
-as: <output array field> } }
+{
+  $lookup: {
+    from: <collection to join>,
+    localField: <field from the input documents>,
+    foreignField: <field from the documents of the "from" collection>,
+    let: { <var_1>: <expression>, …, <var_n>: <expression> },
+    pipeline: [ <pipeline to execute on the joined collection> ], // Cannot include $out or $merge
+    as: <output array field>
+  }
+}
 ```
 
 - Örnek:
