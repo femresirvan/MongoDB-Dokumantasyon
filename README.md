@@ -92,7 +92,7 @@ Bütün Stageler dökümantasyon: https://docs.mongodb.com/manual/meta/aggregati
 
 $match filtreleme yapar. sqldeki where sorgusuna denktir.
 
-```json
+```js
 {$match: {<query>}}
 ```
 
@@ -105,18 +105,18 @@ basit bir field için `<query>`:
 - $eq
 
   - field o değere eş mi buna bakar.
-  - ```json
+  - ```js
     { "$match": { "name": "ahmet" } }
     ```
 
 - $lt $gt $lte $gte
   - büyüktür küçüktür karşılaştırması yapmak için.
   - örn-1:
-    ```json
+    ```js
     { "$match": { "qty": { "$gt": 5 } } }
     ```
   - örn-2:
-    ```json
+    ```js
     { $match: { birth: { $gt: new Date('1940-01-01'), $lt: new Date('1960-01-01') } }
     ```
 - $in ve $all
@@ -124,7 +124,7 @@ basit bir field için `<query>`:
   - string veya number içerisinde var mı diye kontrol eder
   - array içerisinde yazılır ve belirtilen stringlerden herhangi biri var mı diye kontrol edilir.
   - örn:
-    ```json
+    ```js
     { "$match": { "name": { "$in": ["ahmet", "mehmet"] } } }
     ```
   - $in'e benzer bir başka kullanım da $all'dur. In'de içerisinde bunlardan herhangi biri var mı diye bakarız. All da ise bunların tamamı var mı diye bakarız yoksa kabul etmeyiz.
@@ -134,7 +134,7 @@ basit bir field için `<query>`:
 birden çok field için `<query>`:
 
 - örn:
-  ```json
+  ```js
   { "$match": { "qty": { "$gt": 5 }, "name": "ahmet" } }
   ```
   böyle bir kullanım mevcuttur.
@@ -142,7 +142,7 @@ birden çok field için `<query>`:
 nested field(object içinde field , embedded document) için `<query>`:
 
 - iki kullanım mevcuttur:
-  ```json
+  ```js
   // Örnek 1
   { $match: { "address.city" : "bitlis" }}
   // Örnek 2
@@ -153,7 +153,7 @@ Array içinde field için `<query>`:
 
 - iki kullanım mevcuttur:
 
-  ```json
+  ```js
   // Örnek 1
   { $match: {"credit_cards" : { "$number": "2333-2333-2333-2333" }}}
   // Örnek 2
@@ -161,27 +161,27 @@ Array içinde field için `<query>`:
   ```
 
 - Array içinde böyle bir field var mı kontrolü
-  ```json
+  ```js
   { "$match": { "contribs": "UNIX" } } // Contribs arrayinde UNIX field'ı var mı?
   ```
 - Array içinde bu fieldlardan herhangi biri var mı kontrolü
 
-  ```json
+  ```js
   {$match { contribs: { $in: [ "ALGOL", "Lisp" ]} }}
   ```
 
 - Array içinde bu fieldların tamamı var mı kontrolü
 
-  ```json
+  ```js
   {$match { contribs: { $all: [ "ALGOL", "Lisp" ] } }}
   ```
 
 - Array in size'ının (kaç elemanlı olduğunun) kontrolü
-  ```json
+  ```js
   {$match { contribs: { $size: 4 } }}
   ```
 - Array içindeki objelerin elemanlarını AND operatörü ile filtreleme($elemMatch)
-  ```json
+  ```js
   {$match { awards: { $elemMatch: { award: "Turing Award", year: { $gt: 1980 } } } }}
   ```
 
@@ -195,13 +195,13 @@ Match için dökümantasyonlar:
 
 spesific olarak istediğimiz fieldları getirmeye yarar.
 
-```json
+```js
 { $project: { "<field1>": 0, "<field2>": 0, ... } } // Return all but the specified fields
 ```
 
 Örnek:
 
-```json
+```js
 {$project:{
     \_id: 0, 'name.last': 1, contribs: { $slice: 2 } } } // Contribs arrayinden ilk 2 fieldı ve name embedded dökümanından (obje içi obje nested document yani) last field'ını döner.
 ```
