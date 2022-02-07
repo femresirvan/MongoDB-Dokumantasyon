@@ -70,10 +70,10 @@
  * ? Başlangıç:
  * @match filtreleme yapar. sqldeki where sorgusuna denktir. (Filter)
  * @project spesific olarak istediğimiz fieldları getirmeye yarar. (Projection)
- * @addFields dökümana yeni fieldlar eklemeye veya var olanı değiştirmeye yarar. update gibi (Update)
+ * @addFields sorgudan dönen sonuç dökümanına yeni fieldlar eklemeye veya var olanı değiştirmeye yarar.
  * @group SQL sorgusunda GROUP BY işlevinin yapıldığı stage'dir.
  * @lookup (join)
- * @unwind
+ * @unwind specify edilen arrayin her elemanını ayrı doc olarak bastırır.
  * @sort belirlenen field veya fieldlarda sıralama işlemi yapar.
  * @limit result'taki max document sayısını belirler.
  * @count adı üstünde gösterilen dökümanları sayar.,
@@ -129,12 +129,20 @@
  * (Contribs arrayinden ilk 2 fieldı ve name embedded dökümanından (obje içi obje nested document yani) last field'ını döner.)
  * !Tıpkı find(query,projection) parametreleri alırken projectionda _id default olarak 1 iken burada da aynı durum söz konusudur.
  *
- * @addFields dökümana yeni fieldlar eklemeye veya var olanı değiştirmeye yarar. update gibi
+ * @addFields sorgudan dönen sonuç dökümanına yeni fieldlar eklemeye veya var olanı değiştirmeye yarar.
  * Burada çok iyi anlatılmış: https://docs.mongodb.com/manual/reference/operator/aggregation/addFields/#mongodb-pipeline-pipe.-addFields
  *
  * @group SQL sorgusunda GROUP BY işlevinin yapıldığı stage'dir.
  *
- *
+ * Syntax {
+  $group:
+    {
+      _id: <expression>, // Group By Expression
+      <field1>: { <accumulator1> : <expression1> },
+      ...
+    }
+ }
+ * accumulatorler ve daha fazlası için: https://docs.mongodb.com/manual/reference/operator/aggregation/group/
  * @lookup kısaca sql deki natural join e tekabül etmektedir başka bir documentteki field'ı eşleştirmeye yarar.
  *  { $lookup: {
  *    from: <collection to join>,
@@ -176,7 +184,8 @@
  * lookup dökümantasyon: https://docs.mongodb.com/manual/reference/operator/aggregation/lookup/
  *
  * @unwind
- *
+ * Bu kaynağa bakabilirsiniz: 
+ * https://studio3t.com/knowledge-base/articles/mongodb-aggregation-framework/#mongodb-unwind
  *
  * @sort belirlenen field veya fieldlarda sıralama işlemi yapar.
  * Kullanım: { $sort: { <field1>: <sort order>, <field2>: <sort order> ... } }

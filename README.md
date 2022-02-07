@@ -66,7 +66,7 @@ Bütün Stageler dökümantasyon: https://docs.mongodb.com/manual/meta/aggregati
 
 **$project** spesific olarak istediğimiz fieldları getirmeye yarar. (Projection)
 
-**$addFields** dökümana yeni fieldlar eklemeye veya var olanı değiştirmeye yarar. update gibi (Update)
+**$addFields** sorgudan dönen sonuç dökümanına yeni fieldlar eklemeye veya var olanı değiştirmeye yarar.
 
 **$group** SQL sorgusunda GROUP BY işlevinin yapıldığı stage'dir.
 
@@ -208,6 +208,160 @@ spesific olarak istediğimiz fieldları getirmeye yarar.
 
 _!_ concating (Eklenecek.)
 
+#### $addFields
+
+Sorgudan dönen sonuç dökümanına yeni fieldlar eklemeye veya var olanı değiştirmeye yarar.
+
+Burada çok iyi anlatılmış: https://docs.mongodb.com/manual/reference/operator/aggregation/addFields/#mongodb-pipeline-pipe.-addFields
+
+-
+
+#### $group
+
+SQL sorgusunda GROUP BY işlevinin yapıldığı stage'dir.
+Syntax
+
+```js
+{
+  $group:
+  {
+  \_id: <expression>, // Group By Expression
+  <field1>: { <accumulator1> : <expression1> },
+  ...
+  }
+}
+```
+
+accumulatorler ve daha fazlası için: https://docs.mongodb.com/manual/reference/operator/aggregation/group/
+
+#### $lookup
+
+kısaca sql deki natural join e tekabül etmektedir başka bir documentteki field'ı eşleştirmeye yarar.
+
+```js
+{ $lookup: {
+from: <collection to join>,
+localField: <field from the input documents>,
+foreignField: <field from the documents of the "from" collection>,
+let: { <var_1>: <expression>, …, <var_n>: <expression> },
+pipeline: [ <pipeline to execute on the joined collection> ], // Cannot include $out or $merge
+as: <output array field> } }
+```
+
+- Örnek:
+
+  ```js
+  db.orders.aggregate([
+    {
+      $lookup: {
+        from: "items",
+        localField: "item", // field in the orders collection
+        foreignField: "item", // field in the items collection
+        as: "fromItems",
+      },
+    },
+    {
+      $replaceRoot: {
+        newRoot: {
+          $mergeObjects: [{ $arrayElemAt: ["$fromItems", 0] }, "$$ROOT"],
+        },
+      },
+    },
+    { $project: { fromItems: 0 } },
+  ]);
+  ```
+
+$lookup array içinde kullanımı
+
+- Örnek:
+
+  - Classes'da şöyle bir döküman yapısı olsun.
+
+  ```js
+  { \_id: 1, title: "Reading is ...", enrollmentlist: [ "giraffe2", "pandabear", "artie" ], days: ["M", "W", "F"] }
+  ```
+
+  - Aynı şekilde direkt aradığımız fieldı belirler yazarız.
+
+  ```js
+  db.classes.aggregate([
+    {
+      $lookup: {
+        from: "members",
+        localField: "enrollmentlist",
+        foreignField: "name",
+        as: "enrollee_info",
+      },
+    },
+  ]);
+  ```
+
+  lookup dökümantasyon: https://docs.mongodb.com/manual/reference/operator/aggregation/lookup/
+
+#### $unwind
+
+Bu kaynağa bakabilirsiniz: https://studio3t.com/knowledge-base/articles/mongodb-aggregation-framework/#mongodb-unwind
+
+#### $sort
+
+belirlenen field veya fieldlarda sıralama işlemi yapar.
+Kullanım:
+
+```js
+{ $sort: { <field1>: <sort order>, <field2>: <sort order> ... } }
+```
+
+- `<sort order>` kullanımı:
+  - kullanım-1: 1 Ascending artan sıralama
+  - kullanım-2: -1 Descending azalan sıralama
+  - kullanım-3: { $meta: "textScore" } Sort by the computed textScore metadata in descending order.
+    - computed textscore metadata için kaynak: https://docs.mongodb.com/manual/reference/operator/aggregation/sort/#std-label-sort-pipeline-metadata
+- Örnek:
+
+```js
+{
+  $sort: {
+    borough: 1;
+  }
+}
+```
+
+#### $limit
+
+result'taki max document sayısını belirler.
+
+**!** limit mutlaka sorttan sonra gelmelidir. sıralandıktan sonra limiti gerçekleştirmelidir. Yoksa sıralanılmamış verinin ilk 20 elemanını sıralardı çok saçma olur.
+Kullanım:
+
+```js
+{ $limit: <positive 64-bit integer> }
+```
+
+- Örnek:
+  ```js
+  {
+    $limit: 20;
+  }
+  ```
+  > **!** Burada önemli olan husus; aggregation da result, bir arraydir ve o array içerisinde o arrayin 20 elemanlı olması gerektiğini söylediğimizdir. Yanlış bir anlaşılma olmasın.
+
+#### count
+
+adı üstünde gösterilen dökümanları sayar.
+
+- **!** The $count stage is equivalent to the following $group + $project sequence:
+  ```js
+  db.collection.aggregate( [
+  { $group: { \_id: null, myCount: { $sum: 1 } } },
+  { $project: { \_id: 0 } } ] )
+  ```
+
+#### $replaceRoot
+
+resultı specify edilen şekilde değiştirir.
+
+**!** Burada önemli olan kısım veritabanı dökümanını değil aggregation ile dönen dökümanı değiştirdiğidir.
+
 ### Aggregation Örnekleri
 
 - [Company Database]()
@@ -266,4 +420,6 @@ mongoose.connect("mongodb://localhost:27017/samples");
 
 [Mongodb Aggregation Docs](https://www.practical-mongodb-aggregations.com/who-this-is-for.html)
 
-## Teşekkür
+## 🤝 Teşekkür
+
+Tamamlanacak.
