@@ -76,8 +76,11 @@
  * @unwind
  * @sort belirlenen field veya fieldlarda sıralama işlemi yapar.
  * @limit result'taki max document sayısını belirler.
- * @count adı üstünde gösterilen dökümanları sayar.
- *
+ * @count adı üstünde gösterilen dökümanları sayar.,
+ * @merge Writes the results of the aggregation pipeline to a specified collection. The $merge operator must be the last stage in the pipeline. Mongo 4.2
+ * @out merge işleminin daha basit halidir Mongo 2.6 sürümünden sonra kullanılabilir.
+ * @skip belirtilen miktar kadar resulttaki document'ı atlar
+ * @$replaceRoot resultı specify edilen şekilde değiştirir. Burada önemli olan kısım veritabanı dökümanını değil aggregation ile dönen dökümanı değiştirdiğidir.
  * ? Detaylı:
  * @match filtreleme yapar. sqldeki where sorgusuna denktir.
  * {$match: {<query>}}
@@ -137,9 +140,43 @@
  *    from: <collection to join>,
  *    localField: <field from the input documents>,
  *    foreignField: <field from the documents of the "from" collection>,
+ *    let: { <var_1>: <expression>, …, <var_n>: <expression> },
+ *    pipeline: [ <pipeline to execute on the joined collection> ],  // Cannot include $out or $merge
  *    as: <output array field>  } }
  *
+ * Örnek:
+ * db.orders.aggregate( [
+ *  { $lookup: {
+ *   from: "items",
+ *   localField: "item",    // field in the orders collection
+ *   foreignField: "item",  // field in the items collection
+ *   as: "fromItems"}},
+ *  { $replaceRoot: { newRoot: { $mergeObjects: [ { $arrayElemAt: [ "$fromItems", 0 ] }, "$$ROOT" ] } }
+ *  }, { $project: { fromItems: 0 } } ] )
+ *
+ * $lookup array içinde kullanımı
+ * 
+ * Örnek:
+ * Classes'da şöyle bir döküman yapısı olsun.
+ * { _id: 1, title: "Reading is ...", enrollmentlist: [ "giraffe2", "pandabear", "artie" ], days: ["M", "W", "F"] }
+ * 
+ * Aynı şekilde direkt aradığımız fieldı belirler yazarız.
+ * db.classes.aggregate( [
+   {
+      $lookup:
+         {
+            from: "members",
+            localField: "enrollmentlist",
+            foreignField: "name",
+            as: "enrollee_info"
+        }
+   }
+] )
+ * 
+ * lookup dökümantasyon: https://docs.mongodb.com/manual/reference/operator/aggregation/lookup/
+ *
  * @unwind
+ *
  *
  * @sort belirlenen field veya fieldlarda sıralama işlemi yapar.
  * Kullanım: { $sort: { <field1>: <sort order>, <field2>: <sort order> ... } }
@@ -162,6 +199,13 @@
  * db.collection.aggregate( [
  *  { $group: { _id: null, myCount: { $sum: 1 } } },
  *  { $project: { _id: 0 } } ] )
+ * 
+ * @$replaceRoot 
+ * resultı specify edilen şekilde değiştirir. 
+ * Burada önemli olan kısım veritabanı dökümanını değil aggregation ile dönen dökümanı değiştirdiğidir.
+ * 
+ * 
+ * 
  */
 
 /**
