@@ -1,4 +1,4 @@
-# MongoDB Dökümantasyon
+# MongoDB & Mongoose Dökümantasyon
 
 ![](https://www.cloudsavvyit.com/p/uploads/2021/07/f5932bc2.jpg?width=1198&trim=1,1&bg-color=000&pad=1,1)
 
@@ -9,7 +9,7 @@ Mongodb üzerinde geliştirme yapmak isteyenler için türkçe dökümantasyon.
 - Bazı yerleri direkt copy-paste aldım zamanım oldukça çevireceğim.
 - Buradaki notlar 0'dan hiçbir şey anlatmamaktadır. Ders notu gibi bir dökümantasyon çıkartmaya çalıştım. Mongodb ve aggregation kullanmayan herhangi bir kimse notları okuyarak pek bir şey kazanamayabilir.
 
-## İçindekiler
+## 🎀 İçindekiler
 
 - [Aggregation]()
 
@@ -61,6 +61,33 @@ Mongodb üzerinde geliştirme yapmak isteyenler için türkçe dökümantasyon.
 ### Aggregation Stageler
 
 ### Aggregation Örnekleri
+
+#### 👨‍💻 Kurulum
+
+**!** Bu repostory'de; mongodb'ye node.js(Mongoose Framework) ile bağlantı sağlanmıştır. Bütün işlemler çok benzerdir isterseniz kodlara erişip kendiniz mongo işlemlerini düzenleyip mongodb bash aracılığıyla da kullanabilirsiniz.
+
+**!** Bu kurulum için mongodb bağlantısı, npm ve node.js'e ihtiyacınız vardır.
+
+Clone repository
+
+```bash
+$ git clone https://github.com/femresirvan/MongoDB-Dokumantasyon.git
+$ cd MongoDB-Dokumantasyon
+```
+
+Npm paketleri kurulumu
+
+```bash
+$ npm i
+```
+
+```js
+➥ ~./app.js
+
+mongoose.connect("mongodb://localhost:27017/samples");
+// Bu alanı kendi mongodb conn stringiniz ile değiştirin.
+
+```
 
 ### Aggregation Best Practices
 
