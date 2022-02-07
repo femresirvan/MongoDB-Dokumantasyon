@@ -68,11 +68,11 @@
  * https://docs.mongodb.com/manual/meta/aggregation-quick-reference/
  *
  * ? Başlangıç:
- * @match filtreleme yapar. sqldeki where sorgusuna denktir.
- * @project
- * @addFields dökümana yeni fieldlar eklemeye veya var olanı değiştirmeye yarar. update gibi
+ * @match filtreleme yapar. sqldeki where sorgusuna denktir. (Filter)
+ * @project spesific olarak istediğimiz fieldları getirmeye yarar. (Projection)
+ * @addFields dökümana yeni fieldlar eklemeye veya var olanı değiştirmeye yarar. update gibi (Update)
  * @group SQL sorgusunda GROUP BY işlevinin yapıldığı stage'dir.
- * @lookup
+ * @lookup (join)
  * @unwind
  * @sort belirlenen field veya fieldlarda sıralama işlemi yapar.
  * @limit result'taki max document sayısını belirler.
@@ -125,13 +125,19 @@
  * örn: {$project: { _id: 0, 'name.last': 1, contribs: { $slice: 2 } } }
  * (Contribs arrayinden ilk 2 fieldı ve name embedded dökümanından (obje içi obje nested document yani) last field'ını döner.)
  * !Tıpkı find(query,projection) parametreleri alırken projectionda _id default olarak 1 iken burada da aynı durum söz konusudur.
+ *
  * @addFields dökümana yeni fieldlar eklemeye veya var olanı değiştirmeye yarar. update gibi
  * Burada çok iyi anlatılmış: https://docs.mongodb.com/manual/reference/operator/aggregation/addFields/#mongodb-pipeline-pipe.-addFields
  *
  * @group SQL sorgusunda GROUP BY işlevinin yapıldığı stage'dir.
  *
  *
- * @lookup
+ * @lookup kısaca sql deki natural join e tekabül etmektedir başka bir documentteki field'ı eşleştirmeye yarar.
+ *  { $lookup: {
+ *    from: <collection to join>,
+ *    localField: <field from the input documents>,
+ *    foreignField: <field from the documents of the "from" collection>,
+ *    as: <output array field>  } }
  *
  * @unwind
  *
