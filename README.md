@@ -202,8 +202,8 @@ spesific olarak istediğimiz fieldları getirmeye yarar.
 Örnek:
 
 ```js
-{$project:{
-    \_id: 0, 'name.last': 1, contribs: { $slice: 2 } } } // Contribs arrayinden ilk 2 fieldı ve name embedded dökümanından (obje içi obje nested document yani) last field'ını döner.
+{$project:{ \_id: 0, 'name.last': 1, contribs: { $slice: 2 } } }
+// Contribs arrayinden ilk 2 fieldı ve name embedded dökümanından (obje içi obje nested document yani) last field'ını döner.
 ```
 
 _!_ concating (Eklenecek.)
