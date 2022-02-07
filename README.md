@@ -1,5 +1,7 @@
 # MongoDB-Notlar
 
+![](https://www.cloudsavvyit.com/p/uploads/2021/07/f5932bc2.jpg?width=1198&trim=1,1&bg-color=000&pad=1,1)
+
 Mongodb üzerinde geliştirme yapmak isteyenler için türkçe dökümantasyon.
 
 **Önemli Notlar**
