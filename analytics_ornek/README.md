@@ -97,8 +97,33 @@ db.customers.aggregate([
       },
       //transactions da farklı olduğu için push ediyoruz.
       //all transactions unwind yapıldığı için _id'si eş olmayan array elemanlarına dönüşmüştü. Bu yüzden birbirinin aynısı elemanı olmadığından direkt push atıyoruz.
-      //Daha temiz yazım için _id, user ile değiştirilecek sonrasında
+      //Daha temiz yazım için _id içerisinde obje almak yerini herbirini parametre alıp $first ile kullanabilirisniz alt örnekte onu da yaptım.
       transaction_details: { $push: "$all_transactions" },
+    },
+  },
+]);
+```
+
+## ÖRNEK 3
+
+En düşük miktarda yapılan transaction spesific id için.
+
+```js
+db.transactions.aggregate([
+  //addField ile de olabilir ben unwind ile yapıp sonradan groupladım.
+  { $unwind: "$transactions" },
+
+  { $match: { account_id: 557378 } },
+  //son olarak o account'ın id'sine göre grouplama yapıyoruz ve burada belirleyici olan $min expression ı oluyor.
+  {
+    $group: {
+      _id: "$_id",
+      date: { $first: "$transactions.date" },
+      transaction_code: { $first: "$transactions.transaction_code" },
+      symbol: { $first: "$transactions.symbol" },
+      price: { $first: "$transactions.price" },
+      total: { $first: "$transactions.total" },
+      min_transaction: { $min: "$transactions.amount" },
     },
   },
 ]);
