@@ -82,6 +82,24 @@ db.customers.aggregate([
   //boş array varsa silme.
   { $match: { "all_transactions.transaction": { $ne: [] } } },
   //group ile tek dökümanda toplama.
-  { $group: { _id: "$_id", user: { $push: "$$ROOT" } } },
+  {
+    $group: {
+      //id içerisinde profil bilgileri var.
+      _id: {
+        _id: "$_id",
+        username: "$username",
+        name: "$name",
+        address: "$address",
+        birthdate: "$birthdate",
+        email: "$email",
+        accounts: "$accounts",
+        tier_and_details: "$tier_and_details",
+      },
+      //transactions da farklı olduğu için push ediyoruz.
+      //all transactions unwind yapıldığı için _id'si eş olmayan array elemanlarına dönüşmüştü. Bu yüzden birbirinin aynısı elemanı olmadığından direkt push atıyoruz.
+      //Daha temiz yazım için _id, user ile değiştirilecek sonrasında
+      transaction_details: { $push: "$all_transactions" },
+    },
+  },
 ]);
 ```
