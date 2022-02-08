@@ -4,24 +4,29 @@ const fs = require("fs");
 const express = require("express");
 const app = express();
 
-mongoose.connect("mongodb://localhost:27017/samples");
+mongoose.connect("mongodb://localhost:27017/sample");
 
 const companySchema = new mongoose.Schema({}, { collection: "companies" });
-
 const Company = mongoose.model("Company", companySchema);
 
-app.get("/", async (req, res) => {
-  const result = await Company.aggregate([
-    // a ismini barındıran çalışanların isimlerine göre (a'dan z'ye) sorting yapıp ilk 20 recordu basan algoritma.
-    // !Mutlaka limit'ten önce sorting işlemi yapmalısınız.
-    { $unwind: "$relationships" },
-    { $match: { "relationships.person.first_name": { $in: [/.a/] } } },
-    { $project: { relationships: 1, _id: 0, name: 1 } },
-    { $sort: { "relationships.person.first_name": 1 } },
-    { $limit: 20 },
+const studentSchema = new mongoose.Schema({}, { collection: "students" });
+const Student = mongoose.model("Student", studentSchema);
 
-    // ? Debugging Stage
-    //// { $count: "Total records" },
+const gradeSchema = new mongoose.Schema({}, { collection: "grades" });
+const Grade = mongoose.model("Grade", gradeSchema);
+
+app.get("/", async (req, res) => {
+  const result = await Student.aggregate([
+    { $match: { _id: 0 } },
+    {
+      $lookup: {
+        from: "grades",
+        localField: "_id",
+        foreignField: "student_id",
+        pipeline: [{ $sort: { class_id: 1 } }],
+        as: "scores",
+      },
+    },
   ]).exec();
   res.json(result);
 });

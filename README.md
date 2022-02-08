@@ -155,9 +155,9 @@ Array içinde field için `<query>`:
 
   ```js
   // Örnek 1
-  { $match: {"credit_cards" : { "$number": "2333-2333-2333-2333" }}}
+  { $match: {"credit_cards" : { "number": "2333-2333-2333-2333" }}}
   // Örnek 2
-  { $match: {"credit_cards.$number": "2333-2333-2333-2333" }}
+  { $match: {"credit_cards.number": "2333-2333-2333-2333" }}
   ```
 
 - Array içinde böyle bir field var mı kontrolü
