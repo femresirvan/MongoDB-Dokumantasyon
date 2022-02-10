@@ -128,3 +128,26 @@ db.transactions.aggregate([
   },
 ]);
 ```
+
+## ÖRNEK 4
+
+İlk tarihli transaction spesific account için.
+
+```js
+db.transactions.aggregate([
+  { $unwind: "$transactions" },
+  { $match: { account_id: 557378 } },
+
+  {
+    $group: {
+      _id: "$_id",
+      amount: { $first: "$transactions.amount" },
+      transaction_code: { $first: "$transactions.transaction_code" },
+      symbol: { $first: "$transactions.symbol" },
+      price: { $first: "$transactions.price" },
+      total: { $first: "$transactions.total" },
+      first_transaction_date: { $min: "$transactions.date" },
+    },
+  },
+]);
+```
