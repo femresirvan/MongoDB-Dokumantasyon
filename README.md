@@ -6,7 +6,8 @@ Mongodb üzerinde geliştirme yapmak isteyenler için türkçe dökümantasyon.
 
 **Önemli Notlar**
 
-- Bazı yerleri direkt copy-paste aldım zamanım oldukça çevireceğim.
+- Şu anlık sadece aggregation ile ilgili notlar barındırmaktadır.
+- Bazı yerler yakın zamanda çevrilecektir.
 - Buradaki notlar 0'dan hiçbir şey anlatmamaktadır. Ders notu gibi bir dökümantasyon çıkartmaya çalıştım. Mongodb ve aggregation kullanmayan herhangi bir kimse notları okuyarak pek bir şey kazanamayabilir.
 
 ## 🎀 İçindekiler
